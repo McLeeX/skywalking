@@ -52,7 +52,7 @@ public class H2TableInstaller extends ModelInstaller {
         TableMetaInfo.addModel(model);
         JDBCHikariCPClient h2Client = (JDBCHikariCPClient) client;
         try (Connection conn = h2Client.getConnection()) {
-            try (ResultSet rset = conn.getMetaData().getTables(null, null, model.getName(), null)) {
+            try (ResultSet rset = conn.getMetaData().getTables(conn.getCatalog(), conn.getSchema(), model.getName(), null)) {
                 if (rset.next()) {
                     return true;
                 }
