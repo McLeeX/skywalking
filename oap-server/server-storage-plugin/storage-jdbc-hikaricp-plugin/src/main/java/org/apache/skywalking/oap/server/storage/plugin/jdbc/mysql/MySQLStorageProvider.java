@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.oap.server.storage.plugin.jdbc.mysql;
 
+import lombok.Getter;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.storage.IBatchDAO;
 import org.apache.skywalking.oap.server.core.storage.IHistoryDeleteDAO;
@@ -79,6 +80,8 @@ public class MySQLStorageProvider extends ModuleProvider {
     private static final Logger logger = LoggerFactory.getLogger(MySQLStorageProvider.class);
 
     private MySQLStorageConfig config;
+    // custom_extend
+    @Getter
     private JDBCHikariCPClient mysqlClient;
     private H2RegisterLockDAO lockDAO;
 

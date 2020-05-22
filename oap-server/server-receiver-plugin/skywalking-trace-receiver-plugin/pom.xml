@@ -34,5 +34,11 @@
             <artifactId>skywalking-sharing-server-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--    custom_extend    -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>server-core-extend</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

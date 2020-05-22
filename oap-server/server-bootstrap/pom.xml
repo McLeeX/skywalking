@@ -17,7 +17,8 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>oap-server</artifactId>
         <groupId>org.apache.skywalking</groupId>
@@ -200,6 +201,18 @@
         <dependency>
             <groupId>org.apache.skywalking</groupId>
             <artifactId>configuration-consul</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--    custom_extend     -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>server-core-extend</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>server-extend-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

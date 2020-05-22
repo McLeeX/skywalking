@@ -22,4 +22,9 @@ public class SpanTags {
     public static final String DB_STATEMENT = "db.statement";
 
     public static final String DB_TYPE = "db.type";
+
+    // custom_extend
+    public static final String DB_INSTANCE = "db.instance";
+
+    public static final String DB_BIND_VARIABLES = "db.bind_vars";
 }

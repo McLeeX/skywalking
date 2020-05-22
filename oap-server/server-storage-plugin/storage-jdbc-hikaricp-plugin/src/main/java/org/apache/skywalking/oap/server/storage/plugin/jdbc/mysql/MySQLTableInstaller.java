@@ -37,6 +37,8 @@ import org.apache.skywalking.oap.server.storage.plugin.jdbc.SQLBuilder;
 import org.apache.skywalking.oap.server.storage.plugin.jdbc.h2.dao.H2TableInstaller;
 
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.ALARM;
+import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.DB_INSTANCE_INVENTORY;
+import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.DB_INSTANCE_STATEMENT_INVENTORY;
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.ENDPOINT_INVENTORY;
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.NETWORK_ADDRESS;
 import static org.apache.skywalking.oap.server.core.source.DefaultScopeDefine.SEGMENT;
@@ -112,6 +114,9 @@ public class MySQLTableInstaller extends H2TableInstaller {
             case SERVICE_INSTANCE_INVENTORY:
             case NETWORK_ADDRESS:
             case ENDPOINT_INVENTORY:
+            // custom_extend
+            case DB_INSTANCE_INVENTORY:
+            case DB_INSTANCE_STATEMENT_INVENTORY:
                 createInventoryIndexes(client, model);
                 return;
             case SEGMENT:

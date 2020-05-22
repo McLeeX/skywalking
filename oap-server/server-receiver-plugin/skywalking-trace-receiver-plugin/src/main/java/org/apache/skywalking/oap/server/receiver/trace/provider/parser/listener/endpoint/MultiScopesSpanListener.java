@@ -21,6 +21,7 @@ package org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,11 @@ import org.apache.skywalking.oap.server.core.cache.EndpointInventoryCache;
 import org.apache.skywalking.oap.server.core.cache.NetworkAddressInventoryCache;
 import org.apache.skywalking.oap.server.core.cache.ServiceInstanceInventoryCache;
 import org.apache.skywalking.oap.server.core.cache.ServiceInventoryCache;
+import org.apache.skywalking.oap.server.core.extend.ExtendModule;
+import org.apache.skywalking.oap.server.core.register.DBInstanceInventory;
+import org.apache.skywalking.oap.server.core.register.DBInstanceStatementInventory;
+import org.apache.skywalking.oap.server.core.register.service.IDBInstanceInventoryRegister;
+import org.apache.skywalking.oap.server.core.register.service.IDBInstanceStatementInventoryRegister;
 import org.apache.skywalking.oap.server.core.source.DatabaseSlowStatement;
 import org.apache.skywalking.oap.server.core.source.DetectPoint;
 import org.apache.skywalking.oap.server.core.source.EndpointRelation;
@@ -68,6 +74,9 @@ public class MultiScopesSpanListener implements EntrySpanListener, ExitSpanListe
     private final ServiceInventoryCache serviceInventoryCache;
     private final EndpointInventoryCache endpointInventoryCache;
 
+    private final IDBInstanceInventoryRegister dbInstanceInventoryRegister;
+    private final IDBInstanceStatementInventoryRegister dbInstanceStatementInventoryRegister;
+
     private final List<SourceBuilder> entrySourceBuilders;
     private final List<SourceBuilder> exitSourceBuilders;
     private final List<DatabaseSlowStatement> slowDatabaseAccesses;
@@ -77,11 +86,15 @@ public class MultiScopesSpanListener implements EntrySpanListener, ExitSpanListe
     private long minuteTimeBucket;
     private String traceId;
 
+    private final List<DBSourceBuilder> dbSourceBuilders;
+
     private MultiScopesSpanListener(ModuleManager moduleManager, TraceServiceModuleConfig config) {
         this.sourceReceiver = moduleManager.find(CoreModule.NAME).provider().getService(SourceReceiver.class);
         this.entrySourceBuilders = new LinkedList<>();
         this.exitSourceBuilders = new LinkedList<>();
         this.slowDatabaseAccesses = new ArrayList<>(10);
+        this.dbSourceBuilders = new ArrayList<>();
+
         this.instanceInventoryCache = moduleManager.find(CoreModule.NAME)
                                                    .provider()
                                                    .getService(ServiceInstanceInventoryCache.class);
@@ -94,6 +107,14 @@ public class MultiScopesSpanListener implements EntrySpanListener, ExitSpanListe
         this.networkAddressInventoryCache = moduleManager.find(CoreModule.NAME)
                                                          .provider()
                                                          .getService(NetworkAddressInventoryCache.class);
+
+        this.dbInstanceInventoryRegister = moduleManager.find(ExtendModule.NAME)
+                                                        .provider()
+                                                        .getService(IDBInstanceInventoryRegister.class);
+        this.dbInstanceStatementInventoryRegister = moduleManager.find(ExtendModule.NAME)
+                                                                 .provider()
+                                                                 .getService(IDBInstanceStatementInventoryRegister.class);
+
         this.config = config;
         this.traceId = null;
     }
@@ -237,6 +258,20 @@ public class MultiScopesSpanListener implements EntrySpanListener, ExitSpanListe
             if (isSlowDBAccess) {
                 slowDatabaseAccesses.add(statement);
             }
+
+            DBSourceBuilder dbSourceBuilder = new DBSourceBuilder(sourceBuilder);
+            for (KeyStringValuePair tag : spanDecorator.getAllTags()) {
+                if (SpanTags.DB_INSTANCE.equals(tag.getKey())) {
+                    dbSourceBuilder.setDbInstance(tag.getValue());
+                } else if (SpanTags.DB_STATEMENT.equals(tag.getKey())) {
+                    dbSourceBuilder.setDbStatement(Optional.ofNullable(tag.getValue()).map(String::trim).orElse(null));
+                } else if (SpanTags.DB_BIND_VARIABLES.equals(tag.getKey())) {
+                    dbSourceBuilder.setDbBindVariables(tag.getValue());
+                } else if (SpanTags.DB_TYPE.equals(tag.getKey())) {
+                    dbSourceBuilder.setDbType(tag.getValue());
+                }
+            }
+            dbSourceBuilders.add(dbSourceBuilder);
         }
     }
 
@@ -323,6 +358,37 @@ public class MultiScopesSpanListener implements EntrySpanListener, ExitSpanListe
         });
 
         slowDatabaseAccesses.forEach(sourceReceiver::receive);
+
+        dbSourceBuilders.forEach(dbSourceBuilder -> {
+            SourceBuilder exitSourceBuilder = dbSourceBuilder.getSourceBuilder();
+            if (nonNull(entrySpanDecorator)) {
+                exitSourceBuilder.setSourceEndpointId(entrySpanDecorator.getOperationNameId());
+            } else {
+                exitSourceBuilder.setSourceEndpointId(Const.USER_ENDPOINT_ID);
+            }
+            exitSourceBuilder.setSourceEndpointName(endpointInventoryCache.get(exitSourceBuilder.getSourceEndpointId())
+                                                                          .getName());
+
+            exitSourceBuilder.setTimeBucket(minuteTimeBucket);
+            int dbInstanceId = Const.NONE;
+            int serviceId = dbSourceBuilder.getSourceBuilder().getDestServiceId();
+            String dbInstance = dbSourceBuilder.getDbInstance();
+            int dbType = dbSourceBuilder.getSourceBuilder().getComponentId();
+            while (dbInstanceId == Const.NONE) {
+                dbInstanceId = dbInstanceInventoryRegister.getOrCreate(serviceId, dbInstance, dbType);
+            }
+            int dbInstanceStatementId = Const.NONE;
+            String dbStatement = dbSourceBuilder.getDbStatement();
+            while (dbInstanceStatementId == Const.NONE) {
+                dbInstanceStatementId = dbInstanceStatementInventoryRegister.getOrCreate(dbInstanceId, dbStatement);
+            }
+            dbSourceBuilder.setDbInstanceId(dbInstanceId);
+            dbSourceBuilder.setDbInstanceName(DBInstanceInventory.buildId(serviceId, dbInstance));
+            dbSourceBuilder.setDbInstanceStatementId(dbInstanceStatementId);
+            dbSourceBuilder.setDbInstanceStatementName(DBInstanceStatementInventory.buildId(dbInstanceId, dbStatement));
+            sourceReceiver.receive(dbSourceBuilder.toDBInstance());
+            sourceReceiver.receive(dbSourceBuilder.toDBInstanceStatement());
+        });
     }
 
     @Override

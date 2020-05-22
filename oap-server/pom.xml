@@ -45,6 +45,9 @@
         <module>server-configuration</module>
         <module>server-bootstrap</module>
         <module>server-tools</module>
+        <!--    custom_extend    -->
+        <module>server-core-extend</module>
+        <module>server-extend-plugin</module>
     </modules>
 
     <properties>

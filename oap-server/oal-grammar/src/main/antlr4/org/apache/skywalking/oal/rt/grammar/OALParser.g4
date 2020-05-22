@@ -49,12 +49,14 @@ filterExpression
     : expression
     ;
 
+// custom_extend
 source
     : SRC_ALL | SRC_SERVICE | SRC_DATABASE_ACCESS | SRC_SERVICE_INSTANCE | SRC_ENDPOINT |
       SRC_SERVICE_RELATION | SRC_SERVICE_INSTANCE_RELATION | SRC_ENDPOINT_RELATION |
       SRC_SERVICE_INSTANCE_JVM_CPU | SRC_SERVICE_INSTANCE_JVM_MEMORY | SRC_SERVICE_INSTANCE_JVM_MEMORY_POOL | SRC_SERVICE_INSTANCE_JVM_GC |// JVM source of service instance
       SRC_SERVICE_INSTANCE_CLR_CPU | SRC_SERVICE_INSTANCE_CLR_GC | SRC_SERVICE_INSTANCE_CLR_THREAD |
-      SRC_ENVOY_INSTANCE_METRIC
+      SRC_ENVOY_INSTANCE_METRIC |
+      SRC_DB_INSTANCE | SRC_DB_INSTANCE_STATEMENT
     ;
 
 disableSource
@@ -71,8 +73,9 @@ variable
     : IDENTIFIER
     ;
 
+// custom_extend
 aggregateFunction
-    : functionName LR_BRACKET (funcParamExpression | (literalExpression (COMMA literalExpression)?))? RR_BRACKET
+    : functionName LR_BRACKET (funcParamExpression | (literalExpression (COMMA literalExpression)*))? RR_BRACKET
     ;
 
 functionName

@@ -68,6 +68,12 @@ public class DefaultScopeDefine {
     public static final int PROFILE_TASK_LOG = 27;
     public static final int PROFILE_TASK_SEGMENT_SNAPSHOT = 28;
 
+    // custom_extend
+    public static final int DB_INSTANCE_INVENTORY = 100;
+    public static final int DB_INSTANCE_STATEMENT_INVENTORY = 101;
+    public static final int DB_INSTANCE = 102;
+    public static final int DB_INSTANCE_STATEMENT = 103;
+
     /**
      * Catalog of scope, the metrics processor could use this to group all generated metrics by oal rt.
      */

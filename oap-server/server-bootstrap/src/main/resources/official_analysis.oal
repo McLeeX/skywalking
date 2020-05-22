@@ -95,6 +95,13 @@ envoy_heap_memory_max_used = from(EnvoyInstanceMetric.value).filter(metricName =
 envoy_total_connections_used = from(EnvoyInstanceMetric.value).filter(metricName == "server.total_connections").maxDouble();
 envoy_parent_connections_used = from(EnvoyInstanceMetric.value).filter(metricName == "server.parent_connections").maxDouble();
 
+// custom_extend
+// Database instance metrics
+db_instance_statistics = from(DBInstance.*).statistics(status, latency ,timeBucket);
+
+// Database instance statement metrics
+db_instance_statement_statistics = from(DBInstanceStatement.*).statistics(status, latency ,timeBucket);
+
 // Disable unnecessary hard core stream, targeting @Stream#name
 /////////
 // disable(segment);

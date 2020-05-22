@@ -44,6 +44,10 @@ SRC_SERVICE_INSTANCE_CLR_GC: 'ServiceInstanceCLRGC';
 SRC_SERVICE_INSTANCE_CLR_THREAD: 'ServiceInstanceCLRThread';
 SRC_ENVOY_INSTANCE_METRIC: 'EnvoyInstanceMetric';
 
+//DBInstance and DBInstanceStatement // custom_extend
+SRC_DB_INSTANCE: 'DBInstance';
+SRC_DB_INSTANCE_STATEMENT: 'DBInstanceStatement';
+
 //hard code entities, only used when need to be deactived.
 //Disable is targeting @Stream#name
 SRC_SEGMENT: 'segment';
