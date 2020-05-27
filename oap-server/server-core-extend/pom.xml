@@ -17,6 +17,21 @@
             <artifactId>server-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_common</artifactId>
+            <version>${simpleclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_servlet</artifactId>
+            <version>${simpleclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient</artifactId>
+            <version>${simpleclient.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
