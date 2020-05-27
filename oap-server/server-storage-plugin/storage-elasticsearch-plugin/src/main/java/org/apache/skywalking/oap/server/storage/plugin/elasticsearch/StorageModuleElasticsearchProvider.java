@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.Getter;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.apache.skywalking.oap.server.core.Const;
 import org.apache.skywalking.oap.server.core.CoreModule;
@@ -93,6 +95,8 @@ import org.apache.skywalking.oap.server.storage.plugin.elasticsearch.ttl.Elastic
 public class StorageModuleElasticsearchProvider extends ModuleProvider {
 
     protected final StorageModuleElasticsearchConfig config;
+    // custom_extend
+    @Getter
     protected ElasticSearchClient elasticSearchClient;
 
     public StorageModuleElasticsearchProvider() {

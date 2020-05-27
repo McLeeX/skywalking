@@ -25,6 +25,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Properties;
+
+import lombok.Getter;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.config.ConfigService;
@@ -87,6 +89,8 @@ import static org.apache.skywalking.oap.server.storage.plugin.elasticsearch.Stor
 public class StorageModuleElasticsearch7Provider extends ModuleProvider {
 
     protected final StorageModuleElasticsearch7Config config;
+    // custom_extend
+    @Getter
     protected ElasticSearch7Client elasticSearch7Client;
 
     public StorageModuleElasticsearch7Provider() {

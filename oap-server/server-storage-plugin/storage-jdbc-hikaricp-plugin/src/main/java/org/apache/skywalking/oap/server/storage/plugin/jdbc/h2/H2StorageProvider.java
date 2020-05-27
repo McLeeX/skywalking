@@ -19,6 +19,8 @@
 package org.apache.skywalking.oap.server.storage.plugin.jdbc.h2;
 
 import java.util.Properties;
+
+import lombok.Getter;
 import org.apache.skywalking.oap.server.core.CoreModule;
 import org.apache.skywalking.oap.server.core.storage.IBatchDAO;
 import org.apache.skywalking.oap.server.core.storage.IHistoryDeleteDAO;
@@ -83,6 +85,8 @@ public class H2StorageProvider extends ModuleProvider {
     private static final Logger logger = LoggerFactory.getLogger(H2StorageProvider.class);
 
     private H2StorageConfig config;
+    // custom_extend
+    @Getter
     private JDBCHikariCPClient h2Client;
     private H2RegisterLockDAO lockDAO;
 
