@@ -36,6 +36,7 @@ import org.apache.skywalking.oap.server.receiver.trace.provider.parser.ISegmentP
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.SegmentParseV2;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.SegmentParserListenerManager;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.SegmentParserServiceImpl;
+import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.endpoint.CustomSpanListener;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.endpoint.MultiScopesSpanListener;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.segment.SegmentSpanListener;
 import org.apache.skywalking.oap.server.receiver.trace.provider.parser.listener.service.ServiceInstanceMappingSpanListener;
@@ -92,6 +93,9 @@ public class TraceModuleProvider extends ModuleProvider {
             listenerManager.add(new MultiScopesSpanListener.Factory());
             listenerManager.add(new ServiceMappingSpanListener.Factory());
             listenerManager.add(new ServiceInstanceMappingSpanListener.Factory());
+
+            // custom_extend
+            listenerManager.add(new CustomSpanListener.Factory());
         }
         listenerManager.add(new SegmentSpanListener.Factory(moduleConfig.getSampleRate()));
 
