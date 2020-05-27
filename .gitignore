@@ -21,3 +21,5 @@ OALLexer.tokens
 /test/plugin/dist
 /test/plugin/workspace
 /.mvn/jvm.config
+/oap-server/oal-grammar/gen/*
+/oap-server/oal-grammar/src/main/antlr4/org/apache/skywalking/oal/rt/grammar/gen/*
