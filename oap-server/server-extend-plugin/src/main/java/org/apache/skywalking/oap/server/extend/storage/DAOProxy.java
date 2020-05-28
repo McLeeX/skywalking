@@ -18,7 +18,11 @@ public abstract class DAOProxy<T> {
         this.implClassMap(map);
     }
 
-    protected abstract void implClassMap(Map<Class<? extends ModuleProvider>, Class<? extends T>> map);
+    protected abstract Class<? extends T> mysqlImplClassType();
+
+    protected void implClassMap(Map<Class<? extends ModuleProvider>, Class<? extends T>> map) {
+        map.put(MySQLStorageProvider.class, mysqlImplClassType());
+    }
 
     protected T getDAOImpl() {
         return cacheDAO;
