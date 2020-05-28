@@ -24,17 +24,41 @@ public abstract class Exporter extends Collector {
 
     private IAggregationQueryDAO aggregationQueryDAO;
 
+    /**
+     * @return 指标名称
+     */
     protected abstract String indName();
 
+    /**
+     * @return prometheus metric
+     */
     protected abstract GaugeMetricFamily registryMetric();
 
+    /**
+     * 根据实体id查询对应标签的 values
+     *
+     * @param entityId 实体id
+     * @return 标签 values
+     */
     protected abstract List<String> labelValues(String entityId);
 
-    //上1分钟的数据
+    /**
+     * 返回查询时间的毫秒数, 0代表查询上1分钟的数据。
+     *
+     * @return timeMillis
+     */
     protected int getTimeInterval() {
         return 0;
     }
 
+    /**
+     * 获取本模块或其他模块注册的 service
+     *
+     * @param moduleName  moduleName
+     * @param serviceType service 类型
+     * @param <SERVICE>   service 类型
+     * @return service
+     */
     protected <SERVICE extends Service> SERVICE findService(String moduleName, Class<SERVICE> serviceType) {
         return moduleManager.find(moduleName).provider().getService(serviceType);
     }
