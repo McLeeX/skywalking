@@ -109,6 +109,14 @@ public class Config {
          * Keep tracing even the backend is not available.
          */
         public static boolean KEEP_TRACING = false;
+
+    }
+
+    public static class OsInfo {
+        /**
+         * Limit the length of the ipv4 list size.
+         */
+        public static int IPV4_LIST_SIZE = 10;
     }
 
     public static class Collector {
@@ -357,21 +365,6 @@ public class Config {
             public static boolean TRACE_OPS_PARAMS = false;
         }
 
-        /**
-         * Operation name group rules
-         */
-        public static class OPGroup {
-            /*
-             * Since 6.6.0, exit span is not requesting endpoint register,
-             * this group rule is not required.
-             *
-             * Keep this commented, just as a reminder that, it will be reused in a RPC server side plugin.
-             */
-            //            public static class RestTemplate implements OPGroupDefinition {
-            //                public static Map<String, String> RULE = new HashMap<String, String>();
-            //            }
-        }
-
         public static class Light4J {
             /**
              * If true, trace all middleware/business handlers that are part of the Light4J handler chain for a request,
@@ -405,6 +398,13 @@ public class Config {
              * parameters, NB. this config item is added for the sake of performance
              */
             public static int HTTP_PARAMS_LENGTH_THRESHOLD = 1024;
+        }
+
+        public static class InfluxDB {
+            /**
+             * If set to true, the parameters of the InfluxQL would be collected.
+             */
+            public static boolean TRACE_INFLUXQL = true;
         }
     }
 
